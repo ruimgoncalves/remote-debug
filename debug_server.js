@@ -28,6 +28,11 @@
   Meteor.Debug.prototype.send = function(){
     var args = this.toArray(arguments);
     if (this.pub){
+
+      for (var i = 0; i < args.length; i++) {
+        args[i] = JSON.decycle(args[i]);
+      }
+      
       //this.pub.session.socket.send(_.extend({msg: 'result', id: -1}, message));
       this.pub.set("debug", "0", {data : args, log : this.logCount++});
       this.pub.flush();
