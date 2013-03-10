@@ -56,7 +56,6 @@
         self.added("remote-debug", id, fields);
       },
       changed : function(id, fields){
-        console.log(id, fields);
         self.changed("remote-debug", id, fields);
       }
     });
