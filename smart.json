@@ -3,7 +3,7 @@
   "description": "Send log messages directly to the client browser",
   "homepage": "https://github.com/ruimgoncalves/remote-debug",
   "author": "Rui Goncalves",
-  "version": "0.0.3",
+  "version": "0.0.5",
   "git": "https://github.com/ruimgoncalves/remote-debug.git",
   "packages": {
   }

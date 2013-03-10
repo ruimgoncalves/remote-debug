@@ -1,23 +1,9 @@
 (function () {
 
-  Meteor.Debug = function(){
-    var self = this;
-    
-    self.pub = null;
-    self.logCount = 0;
+  Meteor.Debug.clients = 0;
+  Meteor.Debug.logs = new Meteor.Collection(null);
 
-    Meteor.publish("debug", function() {
-      self.pub = this;
-
-      this.onStop(function(){
-        self.pub = null;
-      });
-
-      this.complete();
-    });
-  };
-
-  Meteor.Debug.prototype.toArray = function(obj){
+  Meteor.Debug.toArray = function(obj){
     var arr = [];
     for (var i in obj){
       arr.push(obj[i]);
@@ -25,30 +11,55 @@
     return arr;
   };
 
-  Meteor.Debug.prototype.send = function(){
+  Meteor.Debug.broadcast = function(method){
     var args = this.toArray(arguments);
-    if (this.pub){
+    args.shift();
 
-      for (var i = 0; i < args.length; i++) {
-        args[i] = JSON.decycle(args[i]);
-      }
-      
-      //this.pub.session.socket.send(_.extend({msg: 'result', id: -1}, message));
-      this.pub.set("debug", "0", {data : args, log : this.logCount++});
-      this.pub.flush();
+    if (Meteor.Debug.clients > 0){
+      Meteor.Debug.logs.update({id : "0"}, {$set : {method : method, data: args}});
     }
     else{
-      Meteor._debug.apply(Meteor._debug, args);
+      console[method].apply(console, args);
     }
   };
 
-  Meteor.Debug.prototype.log = function(){
+  Meteor.Debug.log = function(){
     var args = this.toArray(arguments);
-    this.send.apply(this, args);
+    args.unshift("log");
+    this.broadcast.apply(this, args);
   };
 
+  Meteor.Debug.warn = function(){
+    var args = this.toArray(arguments);
+    args.unshift("warn");
+    this.broadcast.apply(this, args);
+  };
 
-  // Singleton
-  Meteor.Debug = new Meteor.Debug();
+  Meteor.Debug.info = function(){
+    var args = this.toArray(arguments);
+    args.unshift("info");
+    this.broadcast.apply(this, args);
+  };
+
+  Meteor.Debug.logs.insert({id : "0"});
+
+  Meteor.publish("remote-debug", function() {
+    Meteor.Debug.clients++;
+
+    this.onStop(function(){
+      Meteor.Debug.clients--;
+    });
+
+    var self = this;
+    Meteor.Debug.logs.find({id : "0"}).observeChanges({
+      added : function(id, fields){
+        self.added("remote-debug", id, fields);
+      },
+      changed : function(id, fields){
+        console.log(id, fields);
+        self.changed("remote-debug", id, fields);
+      }
+    });
+  });
 
 })();
