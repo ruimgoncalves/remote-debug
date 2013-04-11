@@ -3,8 +3,7 @@ Package.describe({
 });
 
 Package.on_use(function (api) {
-  //api.use('http', 'server');
-  api.use('accounts-base', ['client', 'server']);
+//  api.use('accounts-base', ['client', 'server']);
 
   api.add_files('cycle.js', 'server');
   api.add_files('debug_common.js', ['client', 'server']);
