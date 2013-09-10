@@ -10,4 +10,4 @@ To use this, instead of console.log just do Meteor.Debug.log
     Meteor.Debug.warn("Server Warning", {error : "Outch!!"});
     Meteor.Debug.info("Did you know that ....");
 
-Updated to support the new 0.5.7 api
+Updated to support the new 0.6.5 api

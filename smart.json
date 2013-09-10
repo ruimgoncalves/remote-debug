@@ -3,7 +3,7 @@
   "description": "Send server debug messages directly to the client browser",
   "homepage": "https://github.com/ruimgoncalves/remote-debug",
   "author": "Rui Goncalves",
-  "version": "0.0.5",
+  "version": "0.0.7",
   "git": "https://github.com/ruimgoncalves/remote-debug.git",
   "packages": {
   }
